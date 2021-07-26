@@ -35,6 +35,7 @@ const Comment = styled.p`
 
 const InfiniteScrollList = () => {
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(2);
   const [userData, setUserData] = useState('');
 
   const getInitData = async () => {
@@ -51,6 +52,21 @@ const InfiniteScrollList = () => {
   useEffect(() => {
     getInitData();
   }, []);
+
+  const infiniteScroll = useCallback(async () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      const {
+        data,
+      } = await axios.get(`https://jsonplaceholder.typicode.com/comments?_page=${page}&_limit=10`);
+      setUserData(userData.concat(data));
+      setPage(page + 1);
+    }
+  }, [page, userData]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', infiniteScroll);
+    return () => window.removeEventListener('scroll', infiniteScroll);
+  }, [infiniteScroll]);
 
   if (loading) {
     return <div>loading...</div>;
