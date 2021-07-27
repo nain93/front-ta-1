@@ -9,9 +9,8 @@ import styled from 'styled-components';
 
 const CommentBox = styled.div`
   width: 500px;
-  height: 193px;
-  background: #F8F9FA;
-  border: 0.5px solid #CED4DA;
+  background: #f8f9fa;
+  border: 0.5px solid #ced4da;
   box-sizing: border-box;
   border-radius: 20px;
   padding: 20px;
@@ -19,6 +18,9 @@ const CommentBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  >div:nth-child(2){
+    margin: 10px 0;
+  }
 `;
 
 const Title = styled.span`
@@ -26,11 +28,11 @@ const Title = styled.span`
 `;
 
 const Content = styled.span`
-  margin-left:10px;
+  margin-left: 10px;
 `;
 
 const Comment = styled.p`
-  margin:0;
+  margin: 0;
 `;
 
 const InfiniteScrollList = () => {
@@ -40,7 +42,9 @@ const InfiniteScrollList = () => {
 
   const getInitData = async () => {
     try {
-      const res = await axios.get('https://jsonplaceholder.typicode.com/comments?_page=1&_limit=10');
+      const res = await axios.get(
+        'https://jsonplaceholder.typicode.com/comments?_page=1&_limit=10',
+      );
       setUserData(res.data);
     } catch (e) {
       console.log(e);
@@ -55,9 +59,9 @@ const InfiniteScrollList = () => {
 
   const infiniteScroll = useCallback(async () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      const {
-        data,
-      } = await axios.get(`https://jsonplaceholder.typicode.com/comments?_page=${page}&_limit=10`);
+      const { data } = await axios.get(
+        `https://jsonplaceholder.typicode.com/comments?_page=${page}&_limit=10`,
+      );
       setUserData(userData.concat(data));
       setPage(page + 1);
     }
@@ -72,25 +76,22 @@ const InfiniteScrollList = () => {
     return <div>loading...</div>;
   }
 
-  return (
-    userData.map((item) => (
-      <CommentBox key={item.id}>
-        <div>
-          <Title>Comment Id</Title>
-          <Content>{item.id}</Content>
-        </div>
-        <div>
-          <Title>Email</Title>
-          <Content>{item.email}</Content>
-        </div>
-        <div>
-          <Title>Comment</Title>
-          <Comment>{item.body}</Comment>
-        </div>
-      </CommentBox>
-    ))
-
-  );
+  return userData.map((item) => (
+    <CommentBox key={item.id}>
+      <div>
+        <Title>Comment Id</Title>
+        <Content>{item.id}</Content>
+      </div>
+      <div>
+        <Title>Email</Title>
+        <Content>{item.email}</Content>
+      </div>
+      <div>
+        <Title>Comment</Title>
+        <Comment>{item.body}</Comment>
+      </div>
+    </CommentBox>
+  ));
 };
 
 export default InfiniteScrollList;
